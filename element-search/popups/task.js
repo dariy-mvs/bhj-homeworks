@@ -13,5 +13,6 @@ modalClose.map((i) => {
 });
 
 modalPopap.querySelector(".show-success").onclick = () => {
+  modalPopap.classList.remove('modal_active');
   document.getElementById("modal_success").classList.toggle("modal_active");
 };
