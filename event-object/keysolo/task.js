@@ -6,8 +6,8 @@ class Game {
     this.lossElement = container.querySelector(".status__loss");
     this.timeElement = container.querySelector(".status__time");
     this.wordLength;
+    this.wordTimer;
     this.reset();
-
     this.registerEvents();
   }
 
@@ -15,12 +15,19 @@ class Game {
     this.setNewWord();
     this.winsElement.textContent = 0;
     this.lossElement.textContent = 0;
-    this.timeElement.textContent = 0;
   }
+
+  timer() {
+    this.wordTimer = setInterval(() => {
+    if (+this.timeElement.textContent > 0) {
+      this.timeElement.textContent = +this.timeElement.textContent - 1;
+    } else {
+      this.fail();
+    }
+  }, 1000)};
 
   registerEvents() {
     document.addEventListener("keydown", (event) => {
-      console.log(event.key);
       if (
         event.code === "MetaLeft" ||
         event.code === "MetaRight" ||
@@ -42,14 +49,6 @@ class Game {
         this.fail();
       }
     });
-    //.split('').slice(3)[0]
-    /*
-      TODO:
-      Написать обработчик события, который откликается
-      на каждый введённый символ.
-      В случае правильного ввода слова вызываем this.success()
-      При неправильном вводе символа - this.fail();
-     */
   }
 
   success() {
@@ -62,6 +61,7 @@ class Game {
     if (++this.winsElement.textContent === 10) {
       alert("Победа!");
       this.reset();
+      return;
     }
     this.setNewWord();
   }
@@ -70,6 +70,7 @@ class Game {
     if (++this.lossElement.textContent === 5) {
       alert("Вы проиграли!");
       this.reset();
+      return;
     }
     this.setNewWord();
   }
@@ -79,14 +80,8 @@ class Game {
     this.wordLength = word.length;
     this.renderWord(word);
     this.timeElement.textContent = this.wordLength;
-    let timer = setInterval(() => {
-      if (+this.timeElement.textContent > 0) {
-        this.timeElement.textContent = +this.timeElement.textContent - 1;
-      } else {
-        this.fail();
-        clearInterval(timer);
-      }
-    }, 1000);
+    clearInterval(this.wordTimer);
+    this.timer();
   }
 
   getWord() {
