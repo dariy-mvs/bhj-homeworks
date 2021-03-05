@@ -69,24 +69,18 @@ class Autocomplete {
 
   getMatches( text ) {
     /*
-      TODO: этот метод нужно дописать
-      text - фраза, которую вводят в поле поиска
-      Метод должен вернуть массив.
-
-      Он формируется на основе списка опций select-элемента (this.input)
-      Подходящие опции - те, чей текст содержит то, что есть в аргументе text
-      Необходимо вернуть массив объектов со свойствами:
-      {
-        text: 'Содержимое <option>',
-        value: 'Содержимое атрибута value'
-      }
+  Вроде оно работает, а всё равно ощущение, что что-то не то... Не могу понять почему, где может быть ошибка, и как улучшить код (полагаю, это возможно). Буду благодарна за комментарий))
     */
-    return [
-      {
-        text: 'Чубакка',
-        value: '1'
-      }
-    ];
+   let arrResults = [...this.input];
+   text.split('').forEach(el => {
+    arrResults.forEach((word, ind) => {
+      if (!(word.textContent.split('').includes(el))) {
+        arrResults.splice(ind, 1);
+      };
+    })
+ });
+   arrResults = arrResults.map(el => {return {text: el.text, value: el.value}});
+    return arrResults;
   }
 }
 
