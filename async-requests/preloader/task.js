@@ -1,27 +1,45 @@
 "use strict";
-
-if (localStorage.removeItem("loader")) {
-  document.getElementById("loader").innerHTML = localStorage.removeItem(
-    "loader"
+// при загрузке страницы проверяем localStorage
+if (localStorage.loader) {
+  JSON.parse(localStorage.loader).forEach(el => {
+    document.getElementById("loader").innerHTML += makeFromResponseHTML(el);
+  });
+   localStorage.setItem(
+    "loader", '[]'
   );
+} else {
+  localStorage.setItem('loader', '[]');
+}
+
+// Функции
+
+function makeFromResponseHTML(jsonObj) {
+  return `<div class="item"> <div class="item__code">
+  ${jsonObj.CharCode}
+  </div> <div class="item__value">
+  ${jsonObj.Value} 
+  </div>
+  <div class="item__currency">
+  руб.
+  </div></div>`
 }
 
 fetch("https://netology-slow-rest.herokuapp.com")
   .then((response) => response.json())
   .then((data) => {
     document.getElementById("loader").className = "loader";
+    let arrToJson = [];
+    function makeThisJson (thisVatute) {
+      let elemArrToJson = {CharCode: thisVatute.CharCode, Value: thisVatute.Value};
+      arrToJson.push(elemArrToJson);
+    };
     for (let i in data.response.Valute) {
+      let thisVatute = data.response.Valute[i];
       document.getElementById(
         "items"
-      ).innerHTML += `<div class="item"> <div class="item__code">
-    ${data.response.Valute[i].CharCode}
-    </div> <div class="item__value">
-    ${data.response.Valute[i].Value}
-    </div>
-    <div class="item__currency">
-    руб.
-    </div></div>`;
+      ).innerHTML += makeFromResponseHTML(thisVatute);
+      makeThisJson(thisVatute);
     }
-    localStorage.setItem("loader", document.getElementById("loader"));
-    console.log(window.localStorage);
+    arrToJson = JSON.stringify(arrToJson);
+    localStorage.setItem("loader", arrToJson);
   });
